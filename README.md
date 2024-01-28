@@ -1,2 +1,3 @@
-# spark-stedi-human-balance-analytics
-Udacity AWS data engineering nanodegree
+# STEDI human balance analytics
+
+(Udacity AWS Data ENgineering Nanodegree project)
