@@ -43,11 +43,19 @@ Accelerometertrusted_node1706597186122 = glueContext.create_dynamic_frame.from_c
 )
 
 # Script generated for node SQL Query
+
+# A better join would be to ensure inner join in-between all tables
+# TO remove any missing data, like:
+# SELECT step_trainer_trusted.serialnumber, step_trainer_trusted.sensorreadingtime, step_trainer_trusted.distancefromobject, accelerometer_trusted.x, accelerometer_trusted.y, accelerometer_trusted.z
+# FROM customers_curated, step_trainer_trusted, accelerometer_trusted 
+# WHERE customers_curated.serialnumber = step_trainer_trusted.serialnumber
+# AND customers_curated.email = accelerometer_trusted.user
+# AND accelerometer_trusted.timestamp = step_trainer_trusted.sensorreadingtime
+
 SqlQuery0 = """
 SELECT step_trainer_trusted.serialnumber, step_trainer_trusted.sensorreadingtime, step_trainer_trusted.distancefromobject, accelerometer_trusted.x, accelerometer_trusted.y, accelerometer_trusted.z
-FROM customers_curated, step_trainer_trusted, accelerometer_trusted 
-WHERE customers_curated.serialnumber = step_trainer_trusted.serialnumber
-AND customers_curated.email = accelerometer_trusted.user
+FROM customers_curated, step_trainer_trusted, accelerometer_trusted
+WHERE customers_curated.email = accelerometer_trusted.user
 AND accelerometer_trusted.timestamp = step_trainer_trusted.sensorreadingtime
 """
 SQLQuery_node1706597231035 = sparkSqlQuery(
