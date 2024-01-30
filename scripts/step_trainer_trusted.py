@@ -5,7 +5,16 @@ from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from awsglue.dynamicframe import DynamicFrame
+from awsglue import DynamicFrame
 from pyspark.sql import functions as SqlFuncs
+
+
+def sparkSqlQuery(glueContext, query, mapping, transformation_ctx) -> DynamicFrame:
+    for alias, frame in mapping.items():
+        frame.toDF().createOrReplaceTempView(alias)
+    result = spark.sql(query)
+    return DynamicFrame.fromDF(result, glueContext, transformation_ctx)
+
 
 args = getResolvedOptions(sys.argv, ["JOB_NAME"])
 sc = SparkContext()
@@ -30,36 +39,25 @@ Landingsteptrainer_node1706590833841 = glueContext.create_dynamic_frame.from_opt
     transformation_ctx="Landingsteptrainer_node1706590833841",
 )
 
-# Script generated for node Join
-Join_node1706591478841 = Join.apply(
-    frame1=Landingsteptrainer_node1706590833841,
-    frame2=Curatedcustomers_node1706591451214,
-    keys1=["serialnumber"],
-    keys2=["serialnumber"],
-    transformation_ctx="Join_node1706591478841",
-)
-
-# Script generated for node Drop Fields
-DropFields_node1706591594449 = DropFields.apply(
-    frame=Join_node1706591478841,
-    paths=[
-        "email",
-        "phone",
-        "birthDay",
-        "shareWithPublicAsOfDate",
-        "shareWithResearchAsOfDate",
-        "registrationDate",
-        "customerName",
-        "shareWithFriendsAsOfDate",
-        "`.serialNumber`",
-        "lastUpdateDate",
-    ],
-    transformation_ctx="DropFields_node1706591594449",
+# Script generated for node SQL Query
+SqlQuery0 = """
+SELECT step_trainer_landing.sensorReadingTime, step_trainer_landing.serialNumber, step_trainer_landing.distanceFromObject
+FROM customers_curated
+INNER JOIN step_trainer_landing ON customers_curated.serialnumber = step_trainer_landing.serialnumber;
+"""
+SQLQuery_node1706595778199 = sparkSqlQuery(
+    glueContext,
+    query=SqlQuery0,
+    mapping={
+        "customers_curated": Curatedcustomers_node1706591451214,
+        "step_trainer_landing": Landingsteptrainer_node1706590833841,
+    },
+    transformation_ctx="SQLQuery_node1706595778199",
 )
 
 # Script generated for node Drop Duplicates
 DropDuplicates_node1706594574246 = DynamicFrame.fromDF(
-    DropFields_node1706591594449.toDF().dropDuplicates(),
+    SQLQuery_node1706595778199.toDF().dropDuplicates(),
     glueContext,
     "DropDuplicates_node1706594574246",
 )
