@@ -24,7 +24,7 @@ step_trainer/
 
 ## Customer records
 
-In ` s3://cd0030bucket/customers/`.
+From JSON record stored in S3.
 Containing the following fields:
 
 - serialnumber
@@ -40,7 +40,7 @@ Containing the following fields:
 
 ## Step trainer records
 
-In `s3://cd0030bucket/step_trainer/`.
+From JSON record stored in S3.
 Containing the following fields:
 
 - sensorReadingTime
@@ -49,7 +49,7 @@ Containing the following fields:
 
 ## Accelerometer records
 
-In `s3://cd0030bucket/accelerometer/`.
+From JSON record stored in S3.
 Containing the following fields:
 
 - timeStamp
